@@ -1,9 +1,6 @@
 package br.com.alura.screenmatch.principal;
 
-import br.com.alura.screenmatch.model.DadosEpisodio;
-import br.com.alura.screenmatch.model.DadosSerie;
-import br.com.alura.screenmatch.model.DadosTemporada;
-import br.com.alura.screenmatch.model.Episodio;
+import br.com.alura.screenmatch.model.*;
 import br.com.alura.screenmatch.service.ConsumoAPI;
 import br.com.alura.screenmatch.service.ConverterDados;
 
@@ -21,37 +18,47 @@ public class Principal {
     private final String ENDERECO = "https://www.omdbapi.com/?t=";
     private final String API_Key = "&apikey=5bc273ce";
 
+    private List<DadosSerie> dadosSeries = new ArrayList<>();
+
 
     public void exibeMenu() {
-        var menu = """
-                1 - Buscar séries
-                2 - Buscar episódios
-                
-                0 - Sair
-                """;
+        int opcao = -1;
+        while(opcao != 0) {
+            var menu = """
+            1 - Buscar séries
+            2 - Buscar episódios
+            3 - Listar séries buscadas
 
-        System.out.println(menu);
-        Integer opcao = sc.nextInt();
-        sc.nextLine();
+            0 - Sair                                 
+            """;
 
+            System.out.println(menu);
+            opcao = sc.nextInt();
+            sc.nextLine();
 
-        switch (opcao) {
-            case 1:
-                buscarSerieWeb();
-                break;
-            case 2:
-                buscarEpisodioPorSerie();
-                break;
-            case 0:
-                System.out.println("Saindo...");
-                break;
-            default:
-                System.out.println("Opção invalida");
+            switch (opcao) {
+                case 1:
+                    buscarSerieWeb();
+                    break;
+                case 2:
+                    buscarEpisodioPorSerie();
+                    break;
+                case 3:
+                    listarSeriesBuscadas();
+                    break;
+                case 0:
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida");
+            }
         }
     }
     private void buscarSerieWeb() {
         DadosSerie dados = getDadosSerie();
-        System.out.println(dados);
+        dadosSeries.add(dados);
+        Serie serie = new Serie(dados);
+        System.out.println(serie);
     }
     private DadosSerie getDadosSerie() {
         System.out.println("Digite o nome da série para buscar:");
@@ -59,6 +66,10 @@ public class Principal {
         String json = consumoAPI.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + API_Key);
         DadosSerie dados = conversor.converterDados(json, DadosSerie.class);
         return dados;
+    }
+
+    private void listarSeriesBuscadas() {
+        dadosSeries.forEach(System.out::println);
     }
 
     private void buscarEpisodioPorSerie() {
