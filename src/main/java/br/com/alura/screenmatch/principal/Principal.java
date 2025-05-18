@@ -1,8 +1,10 @@
 package br.com.alura.screenmatch.principal;
 
 import br.com.alura.screenmatch.model.*;
+import br.com.alura.screenmatch.repository.SerieRepository;
 import br.com.alura.screenmatch.service.ConsumoAPI;
 import br.com.alura.screenmatch.service.ConverterDados;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +22,11 @@ public class Principal {
 
     private List<DadosSerie> dadosSeries = new ArrayList<>();
 
+    private SerieRepository serieRepository;
+
+    public Principal(SerieRepository serieRepository) {
+        this.serieRepository = serieRepository;
+    }
 
     public void exibeMenu() {
         int opcao = -1;
@@ -56,8 +63,8 @@ public class Principal {
     }
     private void buscarSerieWeb() {
         DadosSerie dados = getDadosSerie();
-        dadosSeries.add(dados);
         Serie serie = new Serie(dados);
+        serieRepository.save(serie);
         System.out.println(serie);
     }
     private DadosSerie getDadosSerie() {
@@ -69,7 +76,10 @@ public class Principal {
     }
 
     private void listarSeriesBuscadas() {
-        dadosSeries.forEach(System.out::println);
+        List<Serie> series = serieRepository.findAll();
+        series.stream()
+                .sorted(Comparator.comparing(Serie::getGenero))
+                .forEach(System.out::println);
     }
 
     private void buscarEpisodioPorSerie() {

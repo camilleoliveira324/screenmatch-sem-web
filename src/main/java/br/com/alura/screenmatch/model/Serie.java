@@ -2,99 +2,132 @@ package br.com.alura.screenmatch.model;
 
 import br.com.alura.screenmatch.model.enuns.Categoria;
 import br.com.alura.screenmatch.service.traducao.ConsultaMyMemory;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
 
+@Entity
+@Table(name = "series")
 public class Serie {
-        private String titulo;
 
-        private Integer totalTemporadas;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        private Double avaliacao;
+    @Column(unique = true)
+    private String titulo;
 
-        private Categoria genero;
+    private Integer totalTemporadas;
 
-        private String atores;
+    private Double avaliacao;
 
-        private String poster;
+    @Enumerated(EnumType.STRING)
+    private Categoria genero;
 
-        private String sinopse;
+    private String atores;
 
-        public Serie(DadosSerie dadosSerie) {
-            this.titulo = dadosSerie.titulo();
-            this.totalTemporadas = dadosSerie.totalTemporadas();
-            this.avaliacao = OptionalDouble.of(Double.valueOf(dadosSerie.avaliacao())).orElse(0.0);
-            this.genero = Categoria.fromString(dadosSerie.genero().split(",")[0].trim()); //split pra separar os generos, index array 0, uso trim pra retornar sem espaço em branco
-            this.atores = dadosSerie.atores();
-            this.poster = dadosSerie.poster();
-            this.sinopse = ConsultaMyMemory.obterTraducao(dadosSerie.sinopse()).trim();
-        }
+    private String poster;
 
-        public String getTitulo() {
-            return titulo;
-        }
+    private String sinopse;
 
-        public void setTitulo(String titulo) {
-            this.titulo = titulo;
-        }
+    @Transient
+    private List<Episodio> episodios = new ArrayList<>();
 
-        public Integer getTotalTemporadas() {
-            return totalTemporadas;
-        }
+    public Serie() {}
 
-        public void setTotalTemporadas(Integer totalTemporadas) {
-            this.totalTemporadas = totalTemporadas;
-        }
+    public Serie(DadosSerie dadosSerie) {
+        this.titulo = dadosSerie.titulo();
+        this.totalTemporadas = dadosSerie.totalTemporadas();
+        this.avaliacao = OptionalDouble.of(Double.valueOf(dadosSerie.avaliacao())).orElse(0.0);
+        this.genero = Categoria.fromString(dadosSerie.genero().split(",")[0].trim()); //split pra separar os generos, index array 0, uso trim pra retornar sem espaço em branco
+        this.atores = dadosSerie.atores();
+        this.poster = dadosSerie.poster();
+        this.sinopse = ConsultaMyMemory.obterTraducao(dadosSerie.sinopse()).trim();
+    }
 
-        public Double getAvaliacao() {
-            return avaliacao;
-        }
+    public Long getId() {
+        return id;
+    }
 
-        public void setAvaliacao(Double avaliacao) {
-            this.avaliacao = avaliacao;
-        }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-        public Categoria getGenero() {
-            return genero;
-        }
+    public List<Episodio> getEpisodios() {
+        return episodios;
+    }
 
-        public void setGenero(Categoria genero) {
-            this.genero = genero;
-        }
+    public void setEpisodios(List<Episodio> episodios) {
+        this.episodios = episodios;
+    }
 
-        public String getAtores() {
-            return atores;
-        }
+    public String getTitulo() {
+        return titulo;
+    }
 
-        public void setAtores(String atores) {
-            this.atores = atores;
-        }
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 
-        public String getPoster() {
-            return poster;
-        }
+    public Integer getTotalTemporadas() {
+        return totalTemporadas;
+    }
 
-        public void setPoster(String poster) {
-            this.poster = poster;
-        }
+    public void setTotalTemporadas(Integer totalTemporadas) {
+        this.totalTemporadas = totalTemporadas;
+    }
 
-        public String getSinopse() {
-            return sinopse;
-        }
+    public Double getAvaliacao() {
+        return avaliacao;
+    }
 
-        public void setSinopse(String sinopse) {
-            this.sinopse = sinopse;
-        }
+    public void setAvaliacao(Double avaliacao) {
+        this.avaliacao = avaliacao;
+    }
 
-        @Override
-        public String toString() {
-            return "genero=" + genero + '\'' +
-                    "titulo='" + titulo + '\'' +
-                    ", totalTemporadas=" + totalTemporadas +
-                    ", avaliacao=" + avaliacao +
-                    ", atores='" + atores + '\'' +
-                    ", poster='" + poster + '\'' +
-                    ", sinopse='" + sinopse + '\'';
-        }
+    public Categoria getGenero() {
+        return genero;
+    }
+
+    public void setGenero(Categoria genero) {
+        this.genero = genero;
+    }
+
+    public String getAtores() {
+        return atores;
+    }
+
+    public void setAtores(String atores) {
+        this.atores = atores;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public String getSinopse() {
+        return sinopse;
+    }
+
+    public void setSinopse(String sinopse) {
+        this.sinopse = sinopse;
+    }
+
+    @Override
+    public String toString() {
+        return "genero=" + genero + '\'' +
+                "titulo='" + titulo + '\'' +
+                ", totalTemporadas=" + totalTemporadas +
+                ", avaliacao=" + avaliacao +
+                ", atores='" + atores + '\'' +
+                ", poster='" + poster + '\'' +
+                ", sinopse='" + sinopse + '\'';
+    }
 }
 
